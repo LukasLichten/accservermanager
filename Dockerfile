@@ -1,4 +1,4 @@
-FROM debian:11.5-slim
+FROM debian:12.5-slim
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y wine python3-pip && \
@@ -16,7 +16,9 @@ USER someuser
 VOLUME /data
 
 COPY ./requirements.txt .
-RUN pip3 install --user --no-cache-dir -r requirements.txt
+
+# Break system-packages is required due to pep668 with debian bookworm
+RUN pip3 install --user --break-system-packages --no-cache-dir -r requirements.txt
 
 ENV WINEARCH=win64 \
     WINEDEBUG=-all
